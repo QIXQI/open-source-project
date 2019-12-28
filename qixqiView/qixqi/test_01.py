@@ -1,11 +1,11 @@
-# 测试用例1
+# -*- coding: utf-8 -*-
 
-from flask import Flask
+from flask import Flask, Markup
 
 app = Flask(__name__)
 @app.route('/')
 def index():
-    return 'Hello World'
+    return Markup('<div>Hello, %s</div>') % '<em>QixQi</em>'
 if __name__ == '__main__':
     app.debug = True        # 调试模式
     app.run()

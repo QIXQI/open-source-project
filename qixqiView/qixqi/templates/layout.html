@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 
-<title>Hello Qixqi</title>
+<title>Hello QixQi</title>
 
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" type="text/css" />
+<link rel="stylesheet" href="{{ url_for('static', _external=True, filename='css/style.css') }}" type="text/css" />
 
-<div>
+<div class="page">
 
     {% block body %}
 
     {% endblock %}
 
 </div>
+
+<script type="text/javascript" src="{{ url_for('static', _external=True, filename='js/style.js') }}"></script>
+
