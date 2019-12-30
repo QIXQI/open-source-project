@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="zh">
+    <head>
+        <title>qixqi排行榜</title>
+        <link type="text/css" rel="stylesheet" href="{{ url_for('static', _external=True, filename='css/index.css') }}" />
+    </head>
+    <body>
+        <h2>欢迎来到qixqi排行榜</h2>
+
+        <div id="rank"></div>
+
+        <script type="text/javascript" src="{{ url_for('static', _external=True, filename='js/jquery-3.4.1.min.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', _external=True, filename='js/echarts.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', _external=True, filename='js/canvas-nest.min.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', _external=True, filename='js/index.js') }}"></script>
+    </body>
+</html>
