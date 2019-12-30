@@ -1,13 +1,24 @@
 // alert('hello');
+/**
+ * 1. splice 与 slice 区别：前者修改原数组，后者查询原数组
+ */
+
 $(function(){
+    // 配置信息
+    var period = 1;     // 每隔1s刷新
+    var maxItemNum = 10;     // 页面中最多展示10条结果
+
+    var rankBar = echarts.init(document.getElementById('rank'));
+    rankBar.showLoading();      // 打开loading动画
+
 
     // 利用jquery中sort()的自定义方法
     jQuery.extend({
         'sortRule': function(){
             return function(book1, book2){
-                if(book1.rating > book2.rating){        // 因为靠前的在下面，所以rank小
+                if(book1.rating < book2.rating){        // 因为靠前的在下面，所以rank小
                     return 1;       // 交换位置
-                }else if(book1.rating < book2.rating){
+                }else if(book1.rating > book2.rating){
                     return -1;      // 不要交换位置
                 }else{
                     return 0;       // 不要交换位置
@@ -18,13 +29,16 @@ $(function(){
 
 
     
-    // 更新表
+    // 初始化表
     jQuery.extend({
-        'flushView': function(names, ranks){
+        'initView': function(names, ranks){
             console.log(names);
             console.log(ranks);
             /* 柱状图 */
-            echarts.init(document.getElementById('rank')).setOption({
+            // var rankBar = echarts.init(document.getElementById('rank'));
+            // rankBar.showLoading();      // 打开loading动画
+            rankBar.hideLoading();      // 隐藏loading动画
+            rankBar.setOption({
                 title:{
                     text: '风云榜'
                 },
@@ -34,18 +48,39 @@ $(function(){
                 },
                 xAxis:{},
                 yAxis: {
-                    data: names
+                    data: names.reverse()       // 数组倒置
                 },
                 series: [{
                     name: 'rank',
                     type: 'bar',
-                    data: ranks
+                    smooth: true,   // 数据光滑过度
+                    data: ranks.reverse()
                 }]
             });
-
+            // return rankBar;
         }
     });
 
+
+
+    // 刷新表
+    jQuery.extend({
+        'flushView': function(names, ranks){
+            rankBar.setOption({
+                yAxis: {
+                    data: names.reverse()       // 数组倒置
+                },
+                series: [{
+                    name: 'rank',
+                    type: 'bar',
+                    smooth: true,
+                    data: ranks.reverse()       // 数组倒置
+                }]
+            }); 
+        }
+    });
+
+    
 
 
     $.ajax({        // 跨域访问
@@ -64,9 +99,27 @@ $(function(){
             // console.log(data);
 
             data.sort($.sortRule());    // 排序
-            console.log(data);
+            // console.log(data);
             // console.log(data.map(item => item.name));   // 获取属性数组
-            $.flushView(data.map(item => item.name), data.map(item => item.rating));
+            names = data.map(item => item.name);    // 获取属性数组
+            ranks = data.map(item => item.rating);
+            // console.log(names);
+            $.initView(names.slice(0, maxItemNum), ranks.slice(0, maxItemNum));
+            // console.log(names);
+            counter = 0;
+            length = names.length;
+            console.log(length);
+            var flushTimeout = setInterval(function(){
+                if(length - counter > maxItemNum && counter > 0){
+                    $.flushView(names.slice(counter, counter + maxItemNum), ranks.slice(counter, counter+maxItemNum));
+                }
+                counter ++;
+                if(length - counter <= maxItemNum){
+                    console.log(counter);
+                    clearInterval(flushTimeout);
+                }
+            }, period * 1000);
+            
         },
         error: function(err){
             window.location.href = '/error';
