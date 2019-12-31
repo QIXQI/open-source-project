@@ -11,6 +11,16 @@ $(function(){
     var rankBar = echarts.init(document.getElementById('rank'));
     rankBar.showLoading();      // 打开loading动画
 
+    var flushTimeout;    
+
+
+    // 排名策略
+    jQuery.extend({
+        'rank': function(rating, user_count, week_recommend){
+
+        }
+    });
+
 
     // 利用jquery中sort()的自定义方法
     jQuery.extend({
@@ -109,7 +119,7 @@ $(function(){
             counter = 0;
             length = names.length;
             console.log(length);
-            var flushTimeout = setInterval(function(){
+            flushTimeout = setInterval(function(){
                 if(length - counter > maxItemNum && counter > 0){
                     $.flushView(names.slice(counter, counter + maxItemNum), ranks.slice(counter, counter+maxItemNum));
                 }
@@ -119,6 +129,31 @@ $(function(){
                     clearInterval(flushTimeout);
                 }
             }, period * 1000);
+
+            console.log(flushTimeout);
+
+
+            // 刷新图片点击事件
+            $('.control:first').click(function(){
+                // alert('点击了');
+                // console.log(flushTimeout);
+                clearInterval(flushTimeout);
+                counter = 0;
+                $.initView(names.slice(0, maxItemNum), ranks.slice(0, maxItemNum));
+                flushTimeout = setInterval(function(){
+                    if(length - counter > maxItemNum && counter > 0){
+                        $.flushView(names.slice(counter, counter + maxItemNum), ranks.slice(counter, counter+maxItemNum));
+                    }
+                    counter ++;
+                    if(length - counter <= maxItemNum){
+                        console.log(counter);
+                        clearInterval(flushTimeout);
+                    }
+                }, period * 1000);
+            });
+
+
+            
             
         },
         error: function(err){
@@ -130,9 +165,7 @@ $(function(){
 
 
 
-    $.rank = function(rating, user_count, week_recommend){
-        
-    };
+
 
 
 

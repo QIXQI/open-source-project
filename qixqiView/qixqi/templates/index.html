@@ -9,6 +9,11 @@
 
         <div id="rank"></div>
 
+        <div id="process">
+            <img class="control" src="{{ url_for('static', _external=True, filename='img/refresh.png') }}" title="暂停" alt="暂停" /><br />
+            <img class="control setting" src="{{ url_for('static', _external=True, filename='img/setting.png') }}" title="设置" alt="设置" />
+        </div>
+
         <script type="text/javascript" src="{{ url_for('static', _external=True, filename='js/jquery-3.4.1.min.js') }}"></script>
         <script type="text/javascript" src="{{ url_for('static', _external=True, filename='js/echarts.js') }}"></script>
         <script type="text/javascript" src="{{ url_for('static', _external=True, filename='js/canvas-nest.min.js') }}"></script>
