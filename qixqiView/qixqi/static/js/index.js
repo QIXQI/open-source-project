@@ -161,6 +161,36 @@ $(function(){
                 $('#process').css('opacity', '0.1');
                 $('h2').css('opacity', '0.1');
                 $('#setting').css('visibility', 'visible');     // 设置选项可见
+
+
+                // 取消按钮点击事件
+                $('#cancel').click(function(){
+                    // alert('取消');
+                    $('#rank').css('opacity', '1.0');
+                    $('#process').css('opacity', '1.0');
+                    $('h2').css('opacity', '1.0');
+                    $('#setting').css('visibility', 'hidden');     // 设置选项隐藏
+                });
+
+                // 确定按钮点击事件
+                $('#confirm').click(function(){
+                    // alert('确定');
+                    if($('#period').val().trim() != ''){
+                        period = parseInt($('#period').val().trim());
+                    }
+                    if($('#maxItemNum').val().trim() != ''){
+                        maxItemNum = parseInt($('#maxItemNum').val().trim());
+                    }
+                    console.log('period ' + period);
+                    console.log('maxItemNum ' + maxItemNum);
+                    $('#rank').css('opacity', '1.0');
+                    $('#process').css('opacity', '1.0');
+                    $('h2').css('opacity', '1.0');
+                    $('#setting').css('visibility', 'hidden');     // 设置选项隐藏
+                });
+
+
+
             });
 
             
