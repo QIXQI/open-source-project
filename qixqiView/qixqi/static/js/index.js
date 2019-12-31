@@ -153,7 +153,16 @@ $(function(){
             });
 
 
-            
+            // 设置图片点击事件
+            $('.setting:first').click(function(){
+                // alert('设置选项');
+                // $('body').css('opacity', '0.1');    // 设置主题背景透明度，子元素也会被设置，不灵活
+                $('#rank').css('opacity', '0.1');
+                $('#process').css('opacity', '0.1');
+                $('h2').css('opacity', '0.1');
+                $('#setting').css('visibility', 'visible');     // 设置选项可见
+            });
+
             
         },
         error: function(err){

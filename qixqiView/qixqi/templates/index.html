@@ -14,6 +14,15 @@
             <img class="control setting" src="{{ url_for('static', _external=True, filename='img/setting.png') }}" title="设置" alt="设置" />
         </div>
 
+        <div id="setting">
+            <label for="period" class="setting_content">刷新时长(秒)：</label><br />
+            <input type="number" id="period" class="setting_input" name="period" placeholder="刷新时长(秒)" tabindex="1" /><br />
+            <label for="maxItemNum" class="setting_content">展示最大条数：</label><br />
+            <input type="number" id="maxItemNum" class="setting_input" name="maxItemNum" placeholder="展示最大条数" tabindex="2" /><br />
+            <input type="button" name="cancel" value="取消" id="cancel" class="setting_button" tabindex="3" />
+            <input type="button" name="confirm" value="确定" id="confirm" class="setting_button" tabindex="4" />
+        </div>
+
         <script type="text/javascript" src="{{ url_for('static', _external=True, filename='js/jquery-3.4.1.min.js') }}"></script>
         <script type="text/javascript" src="{{ url_for('static', _external=True, filename='js/echarts.js') }}"></script>
         <script type="text/javascript" src="{{ url_for('static', _external=True, filename='js/canvas-nest.min.js') }}"></script>
