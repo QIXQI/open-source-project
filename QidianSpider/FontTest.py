@@ -1,23 +1,12 @@
-"""
-起点中文网，在“数字”上设置了文字反爬，使用了自定义的文字文件ttf
-浏览器渲染不出来，但是可以在网页源代码中找到映射后的数字
-正则爬的是网页源代码 xpath是默认utf-8解析网页数据;网页源代码有数据，使用浏览器"检查"是方框，用xpath爬出来的也是方框
-以小说《斗罗大陆》为例 https://book.qidian.com/info/1115277
-"""
+
 import requests, time, re, pprint
 from fontTools.ttLib import TTFont
 from io import BytesIO
 
-#此代码使用bs和xpath均无法爬出，需使用正则匹配
-#selector = etree.HTML(html_data.text)
-#word1 = selector.xpath('//div[2]/div[6]/div[1]/div[2]/p[3]/em[1]/span/text()')
+
 
 def get_font(url):
-    """
-    获取源代码中数字信息与英文单词之间的映射关系
-    :param url: <str> 网页源代码中的字体地址
-    :return: <dict> 网页字体映射关系
-    """
+    
     time.sleep(1)
     response = requests.get(url)
     font = TTFont(BytesIO(response.content))
@@ -26,7 +15,6 @@ def get_font(url):
     return web_font_relation
 
 
-#在fontcreator中查看此ttf文件中英文单词与阿拉伯数字的映射关系，写入字典
 python_font_relation = {
     'one':1,
     'two':2,
@@ -42,12 +30,7 @@ python_font_relation = {
 }
 
 def get_html_info(url):
-    """
-    解析网页，获取文字文件的地址和需要解码的数字信息
-    :param url: <str> 需要解析的网页地址
-    :return:    <str> 文字文件ttf的地址
-                <list> 反爬的数字，一维列表
-    """
+
     headers = {
         'User-Agent': 'User-Agent:Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36'
     }
@@ -65,11 +48,7 @@ def get_html_info(url):
 
 
 def get_encode_font(numberlist,web_font_relation):
-    """
-    把源代码中的数字信息进行2次解码
-    :param numberlist: <list> 需要解码的一维数字信息
-    :return:
-    """
+   
     data = []
     for i in numberlist:
         fanpa_data = ''
