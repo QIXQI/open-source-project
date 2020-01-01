@@ -120,13 +120,14 @@ $(function(){
             length = names.length;
             console.log(length);
             flushTimeout = setInterval(function(){
-                if(length - counter > maxItemNum && counter > 0){
+                if(length - counter >= maxItemNum && counter > 0){
                     $.flushView(names.slice(counter, counter + maxItemNum), ranks.slice(counter, counter+maxItemNum));
                 }
                 counter ++;
-                if(length - counter <= maxItemNum){
+                if(length - counter < maxItemNum){
                     console.log(counter);
                     clearInterval(flushTimeout);
+                    flushTimeout = null;
                 }
             }, period * 1000);
 
@@ -138,16 +139,18 @@ $(function(){
                 // alert('点击了');
                 // console.log(flushTimeout);
                 clearInterval(flushTimeout);
+                flushTimeout = null;
                 counter = 0;
                 $.initView(names.slice(0, maxItemNum), ranks.slice(0, maxItemNum));
                 flushTimeout = setInterval(function(){
-                    if(length - counter > maxItemNum && counter > 0){
+                    if(length - counter >= maxItemNum && counter > 0){
                         $.flushView(names.slice(counter, counter + maxItemNum), ranks.slice(counter, counter+maxItemNum));
                     }
                     counter ++;
-                    if(length - counter <= maxItemNum){
+                    if(length - counter < maxItemNum){
                         console.log(counter);
                         clearInterval(flushTimeout);
+                        flushTimeout = null;
                     }
                 }, period * 1000);
             });
@@ -161,36 +164,83 @@ $(function(){
                 $('#process').css('opacity', '0.1');
                 $('h2').css('opacity', '0.1');
                 $('#setting').css('visibility', 'visible');     // 设置选项可见
+            });
 
 
-                // 取消按钮点击事件
-                $('#cancel').click(function(){
-                    // alert('取消');
-                    $('#rank').css('opacity', '1.0');
-                    $('#process').css('opacity', '1.0');
-                    $('h2').css('opacity', '1.0');
-                    $('#setting').css('visibility', 'hidden');     // 设置选项隐藏
-                });
+            // 取消按钮点击事件
+            $('#cancel').click(function(){
+                // alert('取消');
+                $('#rank').css('opacity', '1.0');
+                $('#process').css('opacity', '1.0');
+                $('h2').css('opacity', '1.0');
+                $('#setting').css('visibility', 'hidden');     // 设置选项隐藏
+            });
 
-                // 确定按钮点击事件
-                $('#confirm').click(function(){
-                    // alert('确定');
-                    if($('#period').val().trim() != ''){
-                        period = parseInt($('#period').val().trim());
+
+            // 确定按钮点击事件，不能放到图片点击事件中，否则重复绑定事件
+            $('#confirm').click(function(){
+                // alert('确定');
+                // alert('this: ' + $(this).attr('id'));
+                console.log('counter: ' + counter);
+                console.log('length: ' + length);
+                pFlag = false;  // 判断period是否改变
+                mFlag = false;
+                if($('#period').val().trim() != ''){
+                    temp = parseInt($('#period').val().trim());
+                    if(temp != period){
+                        pFlag = true;       // period 改变
+                        period = temp;
                     }
-                    if($('#maxItemNum').val().trim() != ''){
-                        maxItemNum = parseInt($('#maxItemNum').val().trim());
+                }
+                if($('#maxItemNum').val().trim() != ''){
+                    temp = parseInt($('#maxItemNum').val().trim());
+                    if(temp != maxItemNum){
+                        mFlag = true;       // maxItemNum 改变
+                        maxItemNum = temp;
                     }
-                    console.log('period ' + period);
-                    console.log('maxItemNum ' + maxItemNum);
-                    $('#rank').css('opacity', '1.0');
-                    $('#process').css('opacity', '1.0');
-                    $('h2').css('opacity', '1.0');
-                    $('#setting').css('visibility', 'hidden');     // 设置选项隐藏
-                });
+                }
+                console.log('period ' + period);
+                console.log('maxItemNum ' + maxItemNum);
+                $('#rank').css('opacity', '1.0');
+                $('#process').css('opacity', '1.0');
+                $('h2').css('opacity', '1.0');
+                $('#setting').css('visibility', 'hidden');     // 设置选项隐藏
 
-
-
+                // alert(flushTimeout);
+                if(flushTimeout == null){       // 定时器已经关闭
+                    if(mFlag){      // maxItemNum 改变
+                        if(length - counter < maxItemNum){      // 回退，本来应该length - counter < maxItemNum - 1排除maxItemNum未改变情况，但由于mFlag为true，所以maxItemNum一定改变
+                            counter = maxItemNum > length ? 0 : (length - maxItemNum);
+                            $.flushView(names.slice(counter, length), ranks.slice(counter, length));
+                        }else if(length - counter >= maxItemNum){       // 继续刷新
+                            flushTimeout = setInterval(function(){
+                                if(length - counter >= maxItemNum && counter > 0){
+                                    $.flushView(names.slice(counter, counter + maxItemNum), ranks.slice(counter, counter + maxItemNum));
+                                }
+                                counter ++;
+                                if(length - counter < maxItemNum){
+                                    clearInterval(flushTimeout);
+                                    flushTimeout = null;
+                                }
+                            }, period * 1000);
+                        }
+                    }
+                }else{      // 定时器仍然开启
+                    if(pFlag){      // period改变
+                        clearInterval(flushTimeout);
+                        flushTimeout = null;
+                        flushTimeout = setInterval(function(){
+                            if(length - counter >= maxItemNum && counter > 0){
+                                $.flushView(names.slice(counter, counter + maxItemNum), ranks.slice(counter, counter + maxItemNum));
+                            }
+                            counter ++;
+                            if(length - counter < maxItemNum){
+                                clearInterval(flushTimeout);
+                                flushTimeout = null;
+                            }
+                        }, period * 1000);
+                    }
+                }
             });
 
             
