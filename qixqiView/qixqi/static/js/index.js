@@ -24,9 +24,26 @@ $(function(){
 
 
     // 排名策略
+    /**
+     * 总分值10分
+     * (10 + 5 + 5)/2
+     * rating: 直接映射到10分值
+     * user_count: 500一分
+     */
     jQuery.extend({
         'rank': function(rating, user_count, week_recommend){
-
+            var result = rating;
+            if(user_count < 2000){
+                result += user_count/500 + 1;
+            }else{
+                result += 5;
+            }
+            if(week_recommend < 4){
+                result += parseInt(week_recommend) + 1;
+            }else{
+                result += 5;
+            }
+            return (result / 2).toFixed(2);     // 保留两位小数
         }
     });
 
@@ -35,9 +52,11 @@ $(function(){
     jQuery.extend({
         'sortRule': function(){
             return function(book1, book2){
-                if(book1.rating < book2.rating){        // 因为靠前的在下面，所以rank小
+                rank1 = $.rank(book1.rating, book1.user_count, book1.week_recommend);
+                rank2 = $.rank(book2.rating, book2.user_count, book2.week_recommend);
+                if(rank1 < rank2){        // 因为靠前的在下面，所以rank小
                     return 1;       // 交换位置
-                }else if(book1.rating > book2.rating){
+                }else if(rank1 > rank2){
                     return -1;      // 不要交换位置
                 }else{
                     return 0;       // 不要交换位置
@@ -233,7 +252,8 @@ $(function(){
             // console.log(data);
             // console.log(data.map(item => item.name));   // 获取属性数组
             names = data.map(item => item.name);    // 获取属性数组
-            ranks = data.map(item => item.rating);
+            // ranks = data.map(item => item.rating);
+            ranks = data.map(item => $.rank(item.rating, item.user_count, item.week_recommend));
             // console.log(names);
             $.initView(names.slice(0, maxItemNum), ranks.slice(0, maxItemNum));
             // console.log(names);
@@ -399,13 +419,13 @@ $(function(){
                 pFlag = false;  // 判断period是否改变
                 mFlag = false;
                 if($('#period').val().trim() != ''){
-                    temp = parseInt($('#period').val().trim());
-                    alert(temp);
+                    // alert($('#period').val());
+                    temp = parseFloat($('#period').val().trim());
                     if(temp != period){
                         pFlag = true;       // period 改变
                         period = temp;
                     }
-                    alert(period);
+                    // alert(period);
                 }
                 if($('#maxItemNum').val().trim() != ''){
                     temp = parseInt($('#maxItemNum').val().trim());
