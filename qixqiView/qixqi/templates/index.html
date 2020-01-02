@@ -19,7 +19,7 @@
         <div id="setting">
             <label for="period" class="setting_content">刷新时长(秒)：</label><br />
             <!-- step=0.1 支持一位小数-->
-            <input type="number" id="period" step="0.1" class="setting_input" name="period" placeholder="刷新时长(秒)" tabindex="1" /><br />
+            <input type="number" id="period" min="0.1" max="60" step="0.1" class="setting_input" name="period" placeholder="刷新时长(秒)" tabindex="1" /><br />
             <label for="maxItemNum" class="setting_content">展示最大条数：</label><br />
             <!-- step=1 只支持整数 -->
             <input type="number" id="maxItemNum" step="1" class="setting_input" name="maxItemNum" placeholder="展示最大条数" tabindex="2" /><br />

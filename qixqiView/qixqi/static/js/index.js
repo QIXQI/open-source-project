@@ -20,6 +20,7 @@ $(function(){
 
     var flushTimeout;    
     var clearFlag = false;      // 记录echarts表是否clear重建过
+    var viewType = 'default';          // 当前哪一个界面 ('default'/'rating'/'user_count'/'week_recommend')
 
 
     // 排名策略
@@ -183,9 +184,11 @@ $(function(){
             // console.log('numbers = ' + numbers);
             rankBar.clear();
             clearFlag = true;
+            viewType = name;
             if(flushTimeout != null){
                 clearInterval(flushTimeout);
                 flushTimeout = null;
+                $('.run').attr({'src': './static/img/start.png', 'title': '开始', 'alt': '开始'});
             }
             rankBar.setOption({
                 title: {
@@ -242,6 +245,15 @@ $(function(){
 
             // 刷新图片点击事件
             $('.control:first').click(function(){
+                if(viewType != 'default'){      // 总览视图
+                    // alert(viewType);
+                    // rankBar.refresh();
+                    option1 = rankBar.getOption();      // 重新加载动画
+                    rankBar.clear();
+                    rankBar.setOption(option1);
+                    return;
+                }
+
                 // alert('点击了');
                 // console.log(flushTimeout);
                 if(flushTimeout != null){
@@ -286,7 +298,7 @@ $(function(){
 
             // 标签获取焦点事件
             // label的for属性和focus事件同时设置时，会在label点击时触发两次单选按钮点击，所以取消for属性
-            $('label.choice').focus(function(e){
+            $('label.choice').focus(function(){
                 // console.log(forId);
                 // console.log('focus: ' + e);
                 // console.log('-----------------------');
@@ -354,6 +366,14 @@ $(function(){
                     $('h2').css('opacity', '1.0');
                     $('#setting').css('visibility', 'hidden');     // 设置选项隐藏
                     $.enterKeyDown(null);       // 解除键绑定
+
+                    // img标签没有disabled属性，可以CSS中的pointer-events: none代替
+                    // $('.control:first-child').attr('disabled', true);
+                    // $('.run').attr('disabled', true);
+                    // $('.search').attr('disabled', true);
+                    // $('.control:first-child').css({'pointer-events': 'none'});
+                    $('.run').css({'pointer-events': 'none'});
+                    $('.search').css({'pointer-events': 'none'});
                     return;
                 }
 
@@ -362,6 +382,13 @@ $(function(){
                     end = (maxItemNum > length) ? length : counter + maxItemNum;
                     $.initView(names.slice(counter, end), ranks.slice(counter, end));
                     clearFlag = false;
+                    viewType = 'default';
+                    // $('.control:first-child').attr('disabled', false);
+                    // $('.run').attr('diabled', false);
+                    // $('.search').attr('disabled', false);
+                    // $('.control:first-child').css({'pointer-events': 'auto'});
+                    $('.run').css({'pointer-events': 'auto'});
+                    $('.search').css({'pointer-events': 'auto'});
                 }
 
 
@@ -373,10 +400,12 @@ $(function(){
                 mFlag = false;
                 if($('#period').val().trim() != ''){
                     temp = parseInt($('#period').val().trim());
+                    alert(temp);
                     if(temp != period){
                         pFlag = true;       // period 改变
                         period = temp;
                     }
+                    alert(period);
                 }
                 if($('#maxItemNum').val().trim() != ''){
                     temp = parseInt($('#maxItemNum').val().trim());
@@ -434,46 +463,22 @@ $(function(){
 
 
             // 单选按钮选中事件
+            var inputDisabledFlag = false;      // 记录是否是disabled
             $('input:radio[name="choice"]').click(function(){
-                // console.log(e.target);
                 choice = $('input:radio:checked.choice').val();
-                // alert(choice);
-                // console.log('period:  ' + $('#period').attr('disabled'));
-                if(choice != 'default'){
-                    // 默认disabled属性是 undefined
-                    // if($('#period').attr('disabled') == false || $('#period').attr('disabled') == undefined){
-                    if($('.run').css('pointer-events') == 'auto'){
-                        // if($('#period').attr('disabled') == undefined){
-                        //     alert(undefined);
-                        // }
-                        $('#period').attr('disabled', true);
-                        $('#maxItemNum').attr('disabled', true);
-                        // img标签没有disabled属性，可以CSS中的pointer-events: none代替
-                        // $('.control:first-child').attr('disabled', true);
-                        // $('.run').attr('disabled', true);
-                        // $('.search').attr('disabled', true);
-                        $('.control:first-child').css({'pointer-events': 'none'});
-                        $('.run').css({'pointer-events': 'none'});
-                        $('.search').css({'pointer-events': 'none'});
-                        $('#period').val(period);
-                        $('#maxItemNum').val(maxItemNum);
-                    }
-                }else{
-                    // if($('#period').attr('disabled') == true){
-                    if($('.run').css('pointer-events') == 'none'){
-                        // console.log('period disabled ', $('#period').attr('disabled'));
-                        $('#period').attr('disabled', false);
-                        $('#maxItemNum').attr('disabled', false);
-                        // $('.control:first-child').attr('disabled', false);
-                        // $('.run').attr('diabled', false);
-                        // $('.search').attr('disabled', false);
-                        $('.control:first-child').css({'pointer-events': 'auto'});
-                        $('.run').css({'pointer-events': 'auto'});
-                        $('.search').css({'pointer-events': 'auto'});
-                    }
+                if(choice != 'default' && !inputDisabledFlag){
+                    $('#period').attr('disabled', true);
+                    $('#maxItemNum').attr('disabled', true);
+                    $('#period').val(period);
+                    $('#maxItemNum').val(maxItemNum);
+                    inputDisabledFlag = true;
                 }
-                // console.log('control:first-child: ' + $('control:first-child').attr('disabled'));
-                console.log('.run ' + $('.run').css('pointer-events'));
+                
+                if(choice == 'default' && inputDisabledFlag){
+                    $('#period').attr('disabled', false);
+                    $('#maxItemNum').attr('disabled', false);
+                    inputDisabledFlag = false;
+                }
             });
 
 
