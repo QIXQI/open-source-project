@@ -4,6 +4,7 @@
  * 2. 处理maxItemNum > length 的情况: 令maxItemNum = length;
  * 3. jquery/js 实现重载
  * 4. safari 取色器有些问题
+ * 5. 设置更改后应不应该自动开启定时器
  */
 
 $(function(){
@@ -149,7 +150,26 @@ $(function(){
         }
     });
 
-    
+
+    // 自定义enter键盘事件
+    jQuery.extend({
+        'enterKeyDown': function(type){
+            document.onkeydown = function(e){
+                var ev = document.all ? window.event: e;
+                if(ev.keyCode == 13){
+                    if(type == null){
+                        console.log('键绑定已经解除');
+                    }else if(type == 'setting'){
+                        // alert('设置确定');
+                        $('#confirm').click();
+                    }else if(type == 'search'){
+                        // alert('搜索确定');
+                        $('#search_confirm').click();
+                    }
+                }
+            };
+        }
+    });
 
 
     $.ajax({        // 跨域访问
@@ -218,6 +238,8 @@ $(function(){
                     $('#search').css('visibility', 'hidden');
                 }
                 $('#setting').css('visibility', 'visible');     // 设置选项可见
+                $('#period').focus();       // 输入框获取焦点     
+                $.enterKeyDown('setting');
             });
 
 
@@ -228,6 +250,7 @@ $(function(){
                 $('#process').css('opacity', '1.0');
                 $('h2').css('opacity', '1.0');
                 $('#setting').css('visibility', 'hidden');     // 设置选项隐藏
+                $.enterKeyDown(null);       // 解除键绑定
             });
 
 
@@ -259,6 +282,7 @@ $(function(){
                 $('#process').css('opacity', '1.0');
                 $('h2').css('opacity', '1.0');
                 $('#setting').css('visibility', 'hidden');     // 设置选项隐藏
+                $.enterKeyDown(null);       // 解除键绑定
 
                 // alert(flushTimeout);
                 if(flushTimeout == null){       // 定时器已经关闭
@@ -344,6 +368,8 @@ $(function(){
                 // $('.setting').off('click');     // setting点击方法禁用
                 // $('.setting').attr('disabled', 'disabled');
                 $('#search').css('visibility', 'visible');
+                $('#search_content').focus();
+                $.enterKeyDown('search');
             });
 
 
@@ -353,6 +379,7 @@ $(function(){
                 $('#process').css('opacity', '1.0');
                 $('h2').css('opacity', '1.0');
                 $('#search').css('visibility', 'hidden');
+                $.enterKeyDown(null);       // 解除键绑定
                 // $('.setting').on('click');
                 // $('.setting').attr('disabled', false);
                 // $('div:hidden').css('opacity', '1.0');
@@ -382,6 +409,7 @@ $(function(){
                 $('#process').css('opacity', '1.0');
                 $('h2').css('opacity', '1.0');
                 $('#search').css('visibility', 'hidden');
+                $.enterKeyDown(null);       // 解除键绑定
             });
 
             
