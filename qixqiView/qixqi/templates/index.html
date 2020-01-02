@@ -12,6 +12,7 @@
         <div id="process">
             <img class="control" src="{{ url_for('static', _external=True, filename='img/refresh.png') }}" title="刷新" alt="刷新" /><br />
             <img class="control run" src="{{ url_for('static', _external=True, filename='img/start.png') }}" title="开始" alt="开始" /><br />
+            <img class="control search" src="{{ url_for('static', _external=True, filename='img/search.png') }}" title="搜索" alt="搜索" /><br />
             <img class="control setting" src="{{ url_for('static', _external=True, filename='img/setting.png') }}" title="设置" alt="设置" />
         </div>
 
@@ -22,6 +23,13 @@
             <input type="number" id="maxItemNum" class="setting_input" name="maxItemNum" placeholder="展示最大条数" tabindex="2" /><br />
             <input type="button" name="cancel" value="取消" id="cancel" class="setting_button" tabindex="3" />
             <input type="button" name="confirm" value="确定" id="confirm" class="setting_button" tabindex="4" />
+        </div>
+
+        <div id="search">
+            <label for="search_content" class="setting_content">搜索内容</label><br />
+            <input type="text" name="search" id="search_content" class="search_input" placeholder="search" tabindex="1" /><br />
+            <input type="button" name="cancel" value="取消" id="search_cancel" class="search_button" tabindex="2" />
+            <input type="button" name="confirm" value="搜索" id="search_confirm" class="search_button" tabindex="3" />
         </div>
 
         <script type="text/javascript" src="{{ url_for('static', _external=True, filename='js/jquery-3.4.1.min.js') }}"></script>

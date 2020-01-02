@@ -1,6 +1,9 @@
 // alert('hello');
 /**
  * 1. splice 与 slice 区别：前者修改原数组，后者查询原数组
+ * 2. 处理maxItemNum > length 的情况: 令maxItemNum = length;
+ * 3. jquery/js 实现重载
+ * 4. safari 取色器有些问题
  */
 
 $(function(){
@@ -64,6 +67,11 @@ $(function(){
                     name: 'rank',
                     type: 'bar',
                     smooth: true,   // 数据光滑过度
+                    itemStyle: {
+                        normal: {
+                            color: '#d11b1a'
+                        }
+                    },
                     data: ranks.reverse()
                 }]
             });
@@ -84,9 +92,60 @@ $(function(){
                     name: 'rank',
                     type: 'bar',
                     smooth: true,
+                    itemStyle: {
+                        normal: {
+                            color: '#d11b1a'
+                        }  
+                    },
                     data: ranks.reverse()       // 数组倒置
                 }]
             }); 
+        }
+    });
+
+
+    // 搜索效果刷新
+    jQuery.extend({
+        'searchFlushView': function(names, ranks, index){
+            rankBar.setOption({
+                yAxis: {
+                    data: names.reverse()
+                },
+                series: [{
+                    name: 'rank',
+                    type: 'bar',
+                    smooth: true,
+                    itemStyle:{
+                        normal:{
+                            color: function(params){
+                                if(params.dataIndex == index){
+                                    return '#00FF00';       // 选中颜色，绿色
+                                }else{
+                                    return '#d11b1a';
+                                }
+                            }
+                        }
+                    },
+                    data: ranks.reverse()
+                }]
+            });
+        }
+    });
+
+
+    // 简单搜索功能
+    jQuery.extend({
+        'simpleSearch': function(names, content){
+            result = -1;
+            $.each(names, function(index, value){       // 遍历数组
+                // console.log('i = ' + index + ', content = ' + content + ', value = ' + value);
+                if(content == value){
+                    // console.log('叮咚');
+                    result = index;
+                    return false;       // 终止循环
+                }
+            });
+            return result;
         }
     });
 
@@ -155,6 +214,9 @@ $(function(){
                 $('#rank').css('opacity', '0.1');
                 $('#process').css('opacity', '0.1');
                 $('h2').css('opacity', '0.1');
+                if($('#search').css('visibility') == 'visible'){
+                    $('#search').css('visibility', 'hidden');
+                }
                 $('#setting').css('visibility', 'visible');     // 设置选项可见
             });
 
@@ -239,7 +301,7 @@ $(function(){
 
 
 
-            // 开始按钮点击事件
+            // 开始/播放按钮点击事件
             $('.run').click(function(){
                 if(flushTimeout == null){           // pause --> start
                     // alert('pause');
@@ -265,6 +327,61 @@ $(function(){
                     console.log('flushTimeout: ' + flushTimeout);
                     $('.run').attr({'src': './static/img/start.png', 'title': '开始', 'alt': '开始'});
                 }
+            });
+
+
+
+            // 搜索图片点击事件
+            $('.search').click(function(){
+                // alert('搜索');
+                // $('div:visible').css('opacity', '0.1');
+                $('#rank').css('opacity', '0.1');
+                $('#process').css('opacity', '0.1');
+                $('h2').css('opacity', '0.1');
+                if($('#setting').css('visibility') == 'visible'){
+                    $('#setting').css('visibility', 'hidden');
+                }
+                // $('.setting').off('click');     // setting点击方法禁用
+                // $('.setting').attr('disabled', 'disabled');
+                $('#search').css('visibility', 'visible');
+            });
+
+
+            // 搜索取消按钮点击事件
+            $('#search_cancel').click(function(){
+                $('#rank').css('opacity', '1.0');
+                $('#process').css('opacity', '1.0');
+                $('h2').css('opacity', '1.0');
+                $('#search').css('visibility', 'hidden');
+                // $('.setting').on('click');
+                // $('.setting').attr('disabled', false);
+                // $('div:hidden').css('opacity', '1.0');
+            });
+
+
+            // 搜索确定按钮点击事件
+            $('#search_confirm').click(function(){
+                // alert('搜索');
+                content = $('#search_content').val().trim();
+                if(content == ''){
+                    alert('empty');
+                }else{
+                    index = $.simpleSearch(names, content);
+                    // alert(index);
+                    if(index == -1){
+                        alert('未找到该条目');
+                    }else if(index + maxItemNum <= length){
+                        counter = index;
+                        $.searchFlushView(names.slice(counter, counter+maxItemNum), ranks.slice(counter, counter+maxItemNum), maxItemNum-1);       // 数组倒置了
+                    }else{
+                        counter = maxItemNum > length ? 0 : (length - maxItemNum);
+                        $.searchFlushView(names.slice(counter, length), ranks.slice(counter, length), length-index-1);      // 数组倒置了
+                    }
+                }
+                $('#rank').css('opacity', '1.0');
+                $('#process').css('opacity', '1.0');
+                $('h2').css('opacity', '1.0');
+                $('#search').css('visibility', 'hidden');
             });
 
             
