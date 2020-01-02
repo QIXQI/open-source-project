@@ -21,6 +21,16 @@
             <input type="number" id="period" class="setting_input" name="period" placeholder="刷新时长(秒)" tabindex="1" /><br />
             <label for="maxItemNum" class="setting_content">展示最大条数：</label><br />
             <input type="number" id="maxItemNum" class="setting_input" name="maxItemNum" placeholder="展示最大条数" tabindex="2" /><br />
+            <div id="choice">
+                <input type="radio" name="choice" class="choice choice_left" value="default" id="default" checked="checked" />
+                <label for="default" class="choice" tabindex="3">default</label>
+                <input type="radio" name="choice" class="choice choice_right" value="rating" id="rating" />
+                <label for="rating" class="choice" tabindex="4">rating</label><br />
+                <input type="radio" name="choice" class="choice choice_left" value="user_count" id="user_count" />
+                <label for="user_count" class="choice" tabindex="5">user_count</label>
+                <input type="radio" name="choice" class="choice choice_right" value="week_recommend" id="week_recommend" />
+                <label for="week_recommend" class="choice" tabindex="6">recommend</label><br />
+            </div>
             <input type="button" name="cancel" value="取消" id="cancel" class="setting_button" tabindex="3" />
             <input type="button" name="confirm" value="确定" id="confirm" class="setting_button" tabindex="4" />
         </div>

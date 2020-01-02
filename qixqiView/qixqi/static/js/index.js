@@ -5,6 +5,8 @@
  * 3. jquery/js 实现重载
  * 4. safari 取色器有些问题
  * 5. 设置更改后应不应该自动开启定时器
+ * 6. 输入框禁用后更改样式，如背景颜色
+ * 7. 设置栏弹出时，选中输入框中的文本
  */
 
 $(function(){
@@ -16,6 +18,7 @@ $(function(){
     rankBar.showLoading();      // 打开loading动画
 
     var flushTimeout;    
+    var clearFlag = false;      // 记录echarts表是否clear重建过
 
 
     // 排名策略
@@ -172,6 +175,37 @@ $(function(){
     });
 
 
+    // 小说rating总揽
+    jQuery.extend({
+        'modifyView': function(names, numbers, title, name){
+            // console.log('names = ' + names);
+            // console.log('numbers = ' + numbers);
+            rankBar.clear();
+            clearFlag = true;
+            rankBar.setOption({
+                title: {
+                    text: title
+                },
+                tooltip: {},
+                legend: {
+                    data: [name]
+                },
+                xAxis: {
+                    data: names
+                },
+                yAxis: {},
+                series: [{
+                    name: name,
+                    type: 'line',
+                    smooth: true,
+                    data: numbers
+                }]
+            });
+        }
+    });
+
+
+
     $.ajax({        // 跨域访问
         type: 'get',    // 不支持post跨域访问
         async: false,
@@ -239,6 +273,8 @@ $(function(){
                 }
                 $('#setting').css('visibility', 'visible');     // 设置选项可见
                 $('#period').focus();       // 输入框获取焦点     
+                $('#period').val(period);
+                $('#maxItemNum').val(maxItemNum);
                 $.enterKeyDown('setting');
             });
 
@@ -256,6 +292,40 @@ $(function(){
 
             // 确定按钮点击事件，不能放到图片点击事件中，否则重复绑定事件
             $('#confirm').click(function(){
+                // 获取单选按钮的值
+                // choice = $('input[type="radio"].choice').length;
+                choice = $('input:radio:checked.choice').val();
+                // alert(choice);
+                if(choice != 'default'){
+                    real_names = data.map(item => item.name);
+                    if(choice == 'rating'){
+                        ratings = data.map(item => item.rating);
+                        // console.log('real_names = ' + real_names);
+                        // console.log('ratings = ' + ratings);
+                        $.modifyView(real_names, ratings, '评分榜', 'rating');
+                    }else if(choice == 'user_count'){
+                        user_counts = data.map(item => item.user_count);
+                        $.modifyView(real_names, user_counts, '用户点击榜', 'user_count');
+                    }else if(choice == 'week_recommend'){
+                        week_recommends = data.map(item => item.week_recommend);
+                        $.modifyView(real_names, week_recommends, '周推荐榜', 'week_recommend');
+                    }
+                    $('#rank').css('opacity', '1.0');
+                    $('#process').css('opacity', '1.0');
+                    $('h2').css('opacity', '1.0');
+                    $('#setting').css('visibility', 'hidden');     // 设置选项隐藏
+                    $.enterKeyDown(null);       // 解除键绑定
+                    return;
+                }
+
+                if(clearFlag){      // echarts重建过
+                    rankBar.clear();
+                    end = (maxItemNum > length) ? length : counter + maxItemNum;
+                    $.initView(names.slice(counter, end), ranks.slice(counter, end));
+                    clearFlag = false;
+                }
+
+
                 // alert('确定');
                 // alert('this: ' + $(this).attr('id'));
                 console.log('counter: ' + counter);
@@ -320,6 +390,22 @@ $(function(){
                             }
                         }, period * 1000);
                     }
+                }
+            });
+
+
+            // 单选按钮选中事件
+            $('input:radio[name="choice"]').click(function(){
+                choice = $('input:radio:checked.choice').val();
+                // alert(choice);
+                if(choice != 'default'){
+                    $('#period').attr('disabled', true);
+                    $('#maxItemNum').attr('disabled', true);
+                    $('#period').val(period);
+                    $('#maxItemNum').val(maxItemNum);
+                }else{
+                    $('#period').attr('disabled', false);
+                    $('#maxItemNum').attr('disabled', false);
                 }
             });
 
