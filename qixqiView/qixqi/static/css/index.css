@@ -62,6 +62,13 @@ body{
 }
 
 
+#setting input:disabled{
+    background-color: #F5F5F5;
+    border: 1px solid #DDD;
+    color: #ACA899;
+}
+
+
 .setting_content{
     float: left;
     margin-left: 125px;
@@ -94,12 +101,20 @@ body{
     /* background-color: yellow; */
 }
 
+.choice{
+    cursor: pointer;
+}
 
 label.choice{
     width: 80px;
     display: inline-block;
     overflow: hidden;
     text-align: left;
+}
+
+label.choice:focus{
+    /* border: none; */
+    outline: none;      /* 选中时没有边框 */
 }
 
 

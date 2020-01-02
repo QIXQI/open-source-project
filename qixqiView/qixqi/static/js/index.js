@@ -279,6 +279,14 @@ $(function(){
             });
 
 
+            // 标签获取焦点事件
+            $('label.choice').focus(function(){
+                forId = $(this).attr('for');
+                console.log(forId);
+                $('#'+forId).click();
+            });
+
+
             // 取消按钮点击事件
             $('#cancel').click(function(){
                 // alert('取消');
