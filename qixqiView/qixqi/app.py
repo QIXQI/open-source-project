@@ -22,7 +22,7 @@ def getBook():
     # print(type(QidianSpider_static_path))
     # print('-'*100)
     rst = make_response('{}')
-    with open(os.path.join(QidianSpider_static_path, 'ebook1.json'), 'r') as fp:
+    with open(os.path.join(QidianSpider_static_path, 'ebook.json'), 'r') as fp:
         dataDict = json.load(fp)
         dataStr = json.dumps(dataDict, ensure_ascii=False)
         print(dataStr)

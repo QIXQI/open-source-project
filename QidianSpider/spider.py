@@ -61,7 +61,7 @@ for i in range(60):
 for t in threads:
     t.join()
 for i in range(60):
-    dic.append({"name":name_list[i],"rating":score_list[i],"userCount":num_list[i],"week_recommend":recomment_list[i]})
+    dic.append({"name":name_list[i],"rating":score_list[i],"user_count":num_list[i],"week_recommend":recomment_list[i]})
 json_str=json.dumps(dic,ensure_ascii=False,sort_keys=True, indent=4)
 with open('ebook.json','w') as fp:
     fp.write(json_str)

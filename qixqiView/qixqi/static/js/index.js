@@ -7,6 +7,7 @@
  * 5. 设置更改后应不应该自动开启定时器
  * 6. 输入框禁用后更改样式，如背景颜色
  * 7. 设置栏弹出时，选中输入框中的文本
+ * 8. 标签点击事件同时触发了单选按钮点击事件
  */
 
 $(function(){
@@ -182,6 +183,10 @@ $(function(){
             // console.log('numbers = ' + numbers);
             rankBar.clear();
             clearFlag = true;
+            if(flushTimeout != null){
+                clearInterval(flushTimeout);
+                flushTimeout = null;
+            }
             rankBar.setOption({
                 title: {
                     text: title
@@ -280,11 +285,37 @@ $(function(){
 
 
             // 标签获取焦点事件
-            $('label.choice').focus(function(){
-                forId = $(this).attr('for');
-                console.log(forId);
-                $('#'+forId).click();
+            // label的for属性和focus事件同时设置时，会在label点击时触发两次单选按钮点击，所以取消for属性
+            $('label.choice').focus(function(e){
+                // console.log(forId);
+                // console.log('focus: ' + e);
+                // console.log('-----------------------');
+                // for(var target in e){
+                    //     console.log(target);
+                // }
+                // console.log(e.type);
+                // console.log(e.detail);
+                // console.log(e.which);
+                // console.log('-----------------------');
+                // forId = $(this).attr('for');
+                // console.log($('#'+forId).attr('checked'));
+                // $('#'+forId).click();
+                $(this).prev().click();
             });
+
+
+            // 处理标签点击事件的同时，由于获取焦点，触发单选按钮点击事件
+            // $('label.choice').click(function(e){
+            //     // 防止事件冒泡，点击两次单选按钮
+            //     // console.log(e.target);
+            //     // if($(e.target).is('input')){        
+            //     //     return;
+            //     // }
+            //     // forId = $(this).attr('for');
+            //     // console.log(forId);
+            //     e.stopPropagation();        // 阻止事件冒泡到focus
+            // });
+            
 
 
             // 取消按钮点击事件
@@ -404,18 +435,49 @@ $(function(){
 
             // 单选按钮选中事件
             $('input:radio[name="choice"]').click(function(){
+                // console.log(e.target);
                 choice = $('input:radio:checked.choice').val();
                 // alert(choice);
+                // console.log('period:  ' + $('#period').attr('disabled'));
                 if(choice != 'default'){
-                    $('#period').attr('disabled', true);
-                    $('#maxItemNum').attr('disabled', true);
-                    $('#period').val(period);
-                    $('#maxItemNum').val(maxItemNum);
+                    // 默认disabled属性是 undefined
+                    // if($('#period').attr('disabled') == false || $('#period').attr('disabled') == undefined){
+                    if($('.run').css('pointer-events') == 'auto'){
+                        // if($('#period').attr('disabled') == undefined){
+                        //     alert(undefined);
+                        // }
+                        $('#period').attr('disabled', true);
+                        $('#maxItemNum').attr('disabled', true);
+                        // img标签没有disabled属性，可以CSS中的pointer-events: none代替
+                        // $('.control:first-child').attr('disabled', true);
+                        // $('.run').attr('disabled', true);
+                        // $('.search').attr('disabled', true);
+                        $('.control:first-child').css({'pointer-events': 'none'});
+                        $('.run').css({'pointer-events': 'none'});
+                        $('.search').css({'pointer-events': 'none'});
+                        $('#period').val(period);
+                        $('#maxItemNum').val(maxItemNum);
+                    }
                 }else{
-                    $('#period').attr('disabled', false);
-                    $('#maxItemNum').attr('disabled', false);
+                    // if($('#period').attr('disabled') == true){
+                    if($('.run').css('pointer-events') == 'none'){
+                        // console.log('period disabled ', $('#period').attr('disabled'));
+                        $('#period').attr('disabled', false);
+                        $('#maxItemNum').attr('disabled', false);
+                        // $('.control:first-child').attr('disabled', false);
+                        // $('.run').attr('diabled', false);
+                        // $('.search').attr('disabled', false);
+                        $('.control:first-child').css({'pointer-events': 'auto'});
+                        $('.run').css({'pointer-events': 'auto'});
+                        $('.search').css({'pointer-events': 'auto'});
+                    }
                 }
+                // console.log('control:first-child: ' + $('control:first-child').attr('disabled'));
+                console.log('.run ' + $('.run').css('pointer-events'));
             });
+
+
+
 
 
 
