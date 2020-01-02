@@ -119,40 +119,32 @@ $(function(){
             counter = 0;
             length = names.length;
             console.log(length);
-            flushTimeout = setInterval(function(){
-                if(length - counter >= maxItemNum && counter > 0){
-                    $.flushView(names.slice(counter, counter + maxItemNum), ranks.slice(counter, counter+maxItemNum));
-                }
-                counter ++;
-                if(length - counter < maxItemNum){
-                    console.log(counter);
-                    clearInterval(flushTimeout);
-                    flushTimeout = null;
-                }
-            }, period * 1000);
 
-            console.log(flushTimeout);
 
 
             // 刷新图片点击事件
             $('.control:first').click(function(){
                 // alert('点击了');
                 // console.log(flushTimeout);
-                clearInterval(flushTimeout);
-                flushTimeout = null;
+                if(flushTimeout != null){
+                    clearInterval(flushTimeout);
+                    flushTimeout = null;
+                    $('.run').attr({'src': './static/img/start.png', 'title': '开始', 'alt': '开始'});
+                }
                 counter = 0;
                 $.initView(names.slice(0, maxItemNum), ranks.slice(0, maxItemNum));
-                flushTimeout = setInterval(function(){
-                    if(length - counter >= maxItemNum && counter > 0){
-                        $.flushView(names.slice(counter, counter + maxItemNum), ranks.slice(counter, counter+maxItemNum));
-                    }
-                    counter ++;
-                    if(length - counter < maxItemNum){
-                        console.log(counter);
-                        clearInterval(flushTimeout);
-                        flushTimeout = null;
-                    }
-                }, period * 1000);
+                // flushTimeout = setInterval(function(){
+                    // if(length - counter >= maxItemNum && counter > 0){
+                        // $.flushView(names.slice(counter, counter + maxItemNum), ranks.slice(counter, counter+maxItemNum));
+                    // }
+                    // counter ++;
+                    // if(length - counter < maxItemNum){
+                        // console.log(counter);
+                        // clearInterval(flushTimeout);
+                        // flushTimeout = null;
+                        // $('.run').attr({'src': './static/img/start.png', 'title': '开始', 'alt': '开始'});
+                    // }
+                // }, period * 1000);
             });
 
 
@@ -221,6 +213,7 @@ $(function(){
                                 if(length - counter < maxItemNum){
                                     clearInterval(flushTimeout);
                                     flushTimeout = null;
+                                    $('.run').attr({'src': './static/img/start.png', 'title': '开始', 'alt': '开始'});
                                 }
                             }, period * 1000);
                         }
@@ -237,9 +230,40 @@ $(function(){
                             if(length - counter < maxItemNum){
                                 clearInterval(flushTimeout);
                                 flushTimeout = null;
+                                $('.run').attr({'src': './static/img/start.png', 'title': '开始', 'alt': '开始'});
                             }
                         }, period * 1000);
                     }
+                }
+            });
+
+
+
+            // 开始按钮点击事件
+            $('.run').click(function(){
+                if(flushTimeout == null){           // pause --> start
+                    // alert('pause');
+                    flushTimeout = setInterval(function(){
+                        if(length - counter >= maxItemNum && counter > 0){
+                            $.flushView(names.slice(counter, counter + maxItemNum), ranks.slice(counter, counter+maxItemNum));
+                        }
+                        counter ++;
+                        if(length - counter < maxItemNum){
+                            console.log(counter);
+                            clearInterval(flushTimeout);
+                            flushTimeout = null;
+                            $('.run').attr({'src': './static/img/start.png', 'title': '开始', 'alt': '开始'});
+                        }
+                    }, period * 1000);
+                    console.log(flushTimeout);
+                    $('.run').attr({'src':'./static/img/pause.png', 'title': '暂停', 'alt': '暂停'});
+                }else{                              // start --> pause
+                    // alert('start');
+                    clearInterval(flushTimeout);
+                    console.log('flushTimeout: ' + flushTimeout);
+                    flushTimeout = null;
+                    console.log('flushTimeout: ' + flushTimeout);
+                    $('.run').attr({'src': './static/img/start.png', 'title': '开始', 'alt': '开始'});
                 }
             });
 
