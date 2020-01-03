@@ -3,8 +3,20 @@
 
 
 ### QidianSpider
-数据爬取
+数据爬取，下去自己写个更好的
 
 
 ### qixqiView
 数据展示
+
+
+
+
+
+## 系统实现
+
+### qixqiView
+
+该模块使用flask开源网络框架组织网页，同时使用jQuery，echarts等开源技术控制网页的显示，程序后台流程图如图4-2-1所示：
+
+![img](file:////var/folders/22/t7b53s953rg9b0pxq4mnldr00000gn/T/com.kingsoft.wpsoffice.mac/wps-zhengxiang/ksohtml/wpsgpduEN.jpg)
