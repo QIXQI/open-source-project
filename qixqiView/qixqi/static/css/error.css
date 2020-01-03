@@ -1,3 +1,14 @@
+body{
+    background-image: url('../img/body.jpg');
+}
+
+h2{
+    /* text-align: center; */
+    margin-left: 43.5%;
+    margin-top: -80px;
+    position: absolute;
+}
+
 pre{
     line-height: 1.25;
     white-space: pre;

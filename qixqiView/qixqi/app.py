@@ -15,7 +15,7 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/getBook')
+@app.route('/getBook', methods=['GET'])
 def getBook():
     # print('-'*100)
     # print(QidianSpider_static_path)
