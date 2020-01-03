@@ -19,4 +19,10 @@
 
 该模块使用flask开源网络框架组织网页，同时使用jQuery，echarts等开源技术控制网页的显示，程序后台流程图如图4-2-1所示：
 
-![img](file:////var/folders/22/t7b53s953rg9b0pxq4mnldr00000gn/T/com.kingsoft.wpsoffice.mac/wps-zhengxiang/ksohtml/wpsgpduEN.jpg)
+![img](./doc/wpsgpduEN.jpg)
+
+<center>图4-2-1</center>
+
+程序前端流程图如图4-2-2所示：
+
+![img](./doc/wpsglim5X.jpg)
